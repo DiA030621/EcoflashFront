@@ -128,7 +128,7 @@ function Map_parada() {
   return (
     <div className="container_parada">
       <div className="parada">
-        <APIProvider apiKey={'AIzaSyA4i6wY6szEPVUtksKuIvL5R_QZFsbl5xc'}>
+        <APIProvider apiKey={''}>
           <Map
             style={{width: '100%', height: '550px'}}
             defaultCenter={{lat: 20.6536, lng: -100.4036}}
