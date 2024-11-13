@@ -1,0 +1,14 @@
+.container_ruta {
+    display: flex;
+    width: 100%;
+    margin-top: 25px;
+  }
+  .mapa_ruta {
+    flex: 0 0 65%;
+    margin: 0;
+  }
+  
+  .formulario_ruta {
+    flex: 0 0 35%;
+    margin: 0;
+  }

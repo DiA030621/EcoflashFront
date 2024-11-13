@@ -1,0 +1,14 @@
+.titles {
+  width: 100%;
+  font-size: 32px;
+  font-weight: bold;
+  color: #000;
+  text-align: center;
+  margin: auto;
+  background-color: #f2cd00;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px; /* Ajusta la altura según tus necesidades */
+}

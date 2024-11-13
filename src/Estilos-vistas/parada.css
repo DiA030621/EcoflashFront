@@ -1,0 +1,58 @@
+.container_parada {
+    display: flex;
+    width: 100%;
+    margin-top: auto;
+  }
+  .parada {
+    flex: 0 0 65%;
+    margin: 0;
+  }
+  
+  .formulario_parada {
+    flex: 0 0 35%;
+    margin: 0;
+  }
+
+  .form-parada {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .label-nombre,
+  .label-latitud,
+  .label-longitud {
+    margin-bottom: 5px;
+  }
+  
+  .input-nombre,
+  .input-latitud,
+  .input-longitud {
+    padding: 5px;
+    margin-bottom: 10px;
+    width: 200px;
+  }
+  
+  .btn-guardar-parada {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-guardar-parada:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-eliminar-parada {
+    padding: 10px 20px;
+    background-color: #c72d2d;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .btn-eliminar-parada:hover {
+    background-color: #ff0000;
+  }

@@ -1,0 +1,55 @@
+.cont-bienv {
+    width: 100%;
+    max-width: 1170px;
+    height: 368px;
+    margin: 50px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 3px 13px 1px rgba(0, 0, 0, 0.12);
+  }
+  
+  .img-bienv {
+    height: 100%;
+    width: auto;
+    max-width: 50%; /* Ajusta el ancho máximo de la imagen según tus necesidades */
+    margin-right: 20px; /* Espacio entre la imagen y el texto */
+  }
+  
+  .cont-texto-bienv {
+    flex: 1; /* Permite que el texto ocupe el espacio restante */
+  }
+  
+  .titulo-bienv {
+    font-size: 24px; /* Ajusta el tamaño de la fuente del título según tus necesidades */
+    margin-bottom: 10px; /* Espacio inferior del título */
+  }
+  
+  .texto-testimonio {
+    font-size: 18px; /* Ajusta el tamaño de la fuente del texto del testimonio según tus necesidades */
+  }
+  
+  @media screen and (max-width: 768px) {
+    /* Estilos específicos para pantallas con un ancho máximo de 768px */
+    .cont-bienv {
+      flex-direction: column;
+      height: auto;
+      padding: 20px;
+    }
+    
+    .img-bienv {
+      max-width: 100%;
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+    
+    .titulo-bienv {
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    
+    .texto-testimonio {
+      font-size: 16px;
+    }
+  }
