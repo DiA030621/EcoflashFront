@@ -10,7 +10,7 @@ export function Home ()
             text="Inicio"/>
             <Bienvenida 
             nombre="Bienvenido"
-            testimonio="Este es el panel de control Bussens"/>
+            testimonio="Este es el panel de control Ecoflash"/>
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../../Estilos-vistas/Bienvenida.css';
 
 function FormLogin (props)
 {

@@ -7,11 +7,8 @@ import {
   NavBtnLink
 } from './NavbarElements';
 import { AiFillHome } from "react-icons/ai";
-import { GrWaypoint } from "react-icons/gr";
-import { FaBusSimple, FaPerson  } from "react-icons/fa6";
-import { FaCarSide } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
-import { MdMonitorHeart } from "react-icons/md";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 
 
@@ -29,13 +26,13 @@ const Navbar = (props) => {
     return (
       <Nav>
         <NavLink to='/home'>
-          <img src={require('../../logo_bussens.png')} style={{ width: '90px', height: 'auto' }} alt='Logo' />
+          <img src={require('../../ecoflash_logo.jpg')} style={{ width: '85px', height: 'auto' }} alt='Logo' />
         </NavLink>
         <Bars onClick={toggleMenu} />
         <NavMenu isopen={isopen}>
           <NavLink to='/home'><AiFillHome /> Home
           </NavLink>
-          <NavLink to='/paradas'><FaBusSimple /> Paradas
+          <NavLink to='/paradas'><FaRegTrashCan /> Contenedores
           </NavLink>
           <NavLink to='/usuario'><HiOutlineUsers /> Usuario
           </NavLink>

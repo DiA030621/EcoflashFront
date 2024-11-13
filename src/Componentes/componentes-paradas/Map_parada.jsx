@@ -1,6 +1,7 @@
 import React, { useEffect, useState} from "react";
 import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
-import camion from '../../parada.png';
+import trashTrue from '../../trashTrue.png';
+import trashFalse from '../../trashTrue.png';
 import '../../Estilos-vistas/parada.css';
 import { MdDelete } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
@@ -10,11 +11,12 @@ import 'react-toastify/dist/ReactToastify.css';
 function Map_parada() {
     
     //hook que define las coordenadas de las paradas
-    const [clave, setClave]  = useState('');
-    const [nombre, setNombre] = useState('');
+    const [id, setId] = useState('');
+    const [maxFill, setMaxFill] = useState('');
+    const [maxWeight, setWeight] = useState('');
     const [lat, setLat] = useState('');
     const [long, setLong] = useState('');
-    const [parada, setParada] = useState([]);
+    const [container, setContainer] = useState([]);
     const [coordenadas, setCoordenadas] = useState([]);
     const [mostrarForm, setMostrarForm] = useState(false);
     const [mensaje, setMensaje] = useState(false);
@@ -23,20 +25,20 @@ function Map_parada() {
 
     useEffect(() => {
         // Llamada a la primera API para obtener las paradas
-        fetch('http://localhost/5toCuatrimestre/Repositorio-Integradora/BACK/rutas/get_paradas',{
+        fetch('http://localhost/ecoflash/container/get_containers',{
             method: 'GET'
         })
       .then(response => response.json())
       .then(data => {
-        //console.log(data.paradas);
-        setParada(data.paradas);
+        console.log(data.container);
+        setContainer(data.container);
       })
       .catch(error => console.log(error));
 
     }, [mensaje, mensajeEliminado]);
 
     //funcion que muestra el formulario de una nueva parada cada que se da clic en el mapa
-    const NewStop = (event) =>
+    const NewContainer = (event) =>
     {        
       setEliminarForm(false);
         if (event.detail && event.detail.latLng) {
@@ -54,10 +56,11 @@ function Map_parada() {
     {
       event.preventDefault();
       
-      const nombreFormulario = event.target[0].value;
-      const latFormulario = event.target[1].value;
-      const longFormulario = event.target[2].value;
-      if (nombreFormulario.trim() === '') {
+      const fillForm = event.target[0].value;
+      const weightForm = event.target[1].value;
+      const latForm = event.target[2].value;
+      const longForm = event.target[3].value;
+      if (fillForm.trim() === '' || weightForm.trim() === '') {
         // Si el campo de nombre está vacío, muestra un mensaje de error
         //setErrorMensaje(true);
         toast.error("debes llenar todos los campos")
@@ -67,10 +70,11 @@ function Map_parada() {
       //console.log(event.target[1].value);
       //console.log(event);
         const form = new FormData();
-        form.append('nombre', nombreFormulario);
-        form.append('latitud', latFormulario);
-        form.append('longitud', longFormulario);
-        fetch('http://localhost/5toCuatrimestre/Repositorio-Integradora/BACK/rutas/insert_parada',
+        form.append('lat', latForm);
+        form.append('long', longForm);
+        form.append('max_fill_level', fillForm);
+        form.append('max_weight', weightForm);
+        fetch('http://localhost/ecoflash/container/create_container',
         {
           method: 'POST',
           body: form
@@ -90,8 +94,8 @@ function Map_parada() {
       event.preventDefault();
       
         const formDelete = new FormData();
-        formDelete.append('clave', clave);
-        fetch('http://localhost/5toCuatrimestre/Repositorio-Integradora/BACK/rutas/delete_parada',
+        formDelete.append('id', id);
+        fetch('http://localhost/ecoflash/container/delete_container',
         {
           method: 'POST',
           body: formDelete
@@ -108,16 +112,17 @@ function Map_parada() {
         .catch(error => console.log(error))
     }
 
-    const eliminarParada = (clave, nombre, latitud, longitud) =>
+    const deleteContainer = (id, max_fill_level, max_weight, lat, long) =>
     {        
       /*console.log(clave);
       console.log(nombre);
       console.log(latitud);
       console.log(longitud);*/
-      setClave(clave);
-      setNombre(nombre);
-      setLat(latitud);
-      setLong(longitud);
+      setId(id);
+      setMaxFill(max_fill_level);
+      setWeight(max_fill_level);
+      setLat(lat);
+      setLong(long);
       setMostrarForm(false);
       setEliminarForm(true);
       setMensaje(false);
@@ -135,18 +140,18 @@ function Map_parada() {
             defaultZoom={13}
             gestureHandling={'greedy'}
             disableDefaultUI={true}
-            onClick={NewStop}
+            onClick={NewContainer}
           >
-            {parada.map(parada => (
+            {container.map(container => (
                 <Marker
-                  key={parada.clave}
-                  position={{ lat: parseFloat(parada.latitud), lng: parseFloat(parada.longitud) }}
-                  label={parada.clave}
+                  key={container.id}
+                  position={{ lat: parseFloat(container.lat), lng: parseFloat(container.long) }}
+                  label={container.id}
                   icon={{
-                    url: camion, // Utilizar la imagen del marcador personalizado
+                    url: trashTrue, // Utilizar la imagen del marcador personalizado
                     scaledSize: new window.google.maps.Size(20, 20), // Tamaño personalizado del marcador
                   }}
-                  onClick={() => eliminarParada(parada.clave, parada.nombre, parada.latitud, parada.longitud )}
+                  onClick={() => deleteContainer(container.id, container.max_fill_level, container.max_weight, container.lat, container.long )}
                 />
             ))}
           </Map>
@@ -154,8 +159,10 @@ function Map_parada() {
     </div>
     <div className="formulario_parada">
         {mostrarForm && <form onSubmit={HandleSubmit} className="form-parada">
-            <label className="label-nombre" >Nombre</label>
-            <input type="text" className="input-nombre"></input>
+            <label className="label-nombre" >Tamaño (cm)</label>
+            <input type="number" className="input-fill"></input>
+            <label className="label-nombre" >Capacidad (gr)</label>
+            <input type="number" className="input-weight"></input>
             <label className="label-latitud">Latitud:</label>
             <input className="input-latitud" type="text" value={coordenadas?.lat || ''} readOnly />
 
@@ -165,11 +172,12 @@ function Map_parada() {
             <button className="btn-guardar-parada" type="submit"><FaSave size={16}/>Guardar</button>  
         </form>}
         {eliminarForm && <form onSubmit={HandleDelete} className="form-parada">
-            <label className="label-nombre" >Nombre</label>
-            <input type="text" className="input-nombre" value={nombre || ''} readOnly />
+            <label className="label-nombre" >Tamaño (cm)</label>
+            <input type="text" className="input-nombre" value={maxFill || ''} readOnly />
+            <label className="label-nombre" >Capacidad (gr)</label>
+            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly />
             <label className="label-latitud">Latitud:</label>
             <input className="input-latitud" type="text" value={lat || ''} readOnly />
-
             <label className="label-longitud">Longitud:</label>
             <input className="input-longitud" type="text" value={long || ''} readOnly />
 

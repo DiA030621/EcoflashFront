@@ -5,7 +5,7 @@ function Bienvenida (props)
 {
     return(
         <div className="cont-bienv">
-			<img className="img-bienv" src={require(`../../logo_bussens.png`)}/>
+			<img className="img-bienv" src={require(`../../ecoflash2.jpg`)}/>
 			<div className="cont-texto-bienv">
 				<p className="titulo-bienv">
 					<strong>{props.nombre}</strong>

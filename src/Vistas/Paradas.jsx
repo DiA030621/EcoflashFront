@@ -7,7 +7,7 @@ function Paradas() {
   return (
     <>
     <Titulo 
-    text='Gestion de paradas'/>
+    text='Gestion de contenedores'/>
     <Map_parada/>
     </>
   );
