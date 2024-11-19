@@ -1,26 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './Vistas/LoginForm';
-import {Home} from './Vistas/Home';
+import Register from './Vistas/Register'; // Tu nuevo componente
+import { Home } from './Vistas/Home';
 import Paradas from './Vistas/Paradas';
 import Usuarios from './Vistas/Usuarios';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './Componentes/Navbar/Navbar';
 import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => 
-  {
+  useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token&& token!=='') 
-    {
+    if (token && token !== '') {
       setIsLoggedIn(true);
     }
   }, []);
 
-  const handleLogin = (token) => 
-  {
+  const handleLogin = (token) => {
     setIsLoggedIn(true);
     localStorage.setItem('token', token);
   };
@@ -31,20 +29,29 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {isLoggedIn ? (
+      <div className="App">
         <BrowserRouter>
-        <Navbar  onLogout={handleLogout} />
-          <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/paradas" element={<Paradas />} />
-            <Route path="/usuarios" element={<Usuarios />} />
-          </Routes>
+          {isLoggedIn ? (
+              <>
+                <Navbar onLogout={handleLogout} />
+                <Routes>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/paradas" element={<Paradas />} />
+                  <Route path="/usuarios" element={<Usuarios />} />
+                  <Route path="*" element={<Navigate to="/home" />} />
+                </Routes>
+              </>
+          ) : (
+              <Routes>
+                {/* Rutas públicas */}
+                <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+                <Route path="/register" element={<Register />} />
+                {/* Redirige cualquier ruta no válida a /login */}
+                <Route path="*" element={<Navigate to="/login" />} />
+              </Routes>
+          )}
         </BrowserRouter>
-      ) : (
-        <LoginForm onLogin={handleLogin} />
-      )}
-    </div>
+      </div>
   );
 }
 

@@ -1,24 +1,10 @@
 /* Form.css */
 @import url('https://fonts.googleapis.com/css2?family=Sora&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
 
-.backgroundd {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #c6c6c6;
-    z-index: -1; 
-}
 .containerr {
-    width: 40%;
-    height: 600px;
+    width: 80%;
+    height: 100%;
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
     border-radius: 10px;
     overflow: hidden;
@@ -94,7 +80,7 @@
     text-transform: uppercase;
     font-size: 15px;
     font-weight: 550;
-    background-color: #007bff; /* Color de fondo del botón */
+    background-color: #165416; /* Color de fondo del botón */
     padding: 12px 45px;
     border-radius: 22px;
     border: none;
@@ -103,5 +89,5 @@
 }
 
 .form.sign_inn .btn:hover {
-    background-color: #0056b3; /* Cambio de color al pasar el cursor */
+    background-color: #e2ece1; /* Cambio de color al pasar el cursor */
 }
