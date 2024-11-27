@@ -2,15 +2,15 @@ import React, { useEffect, useState} from "react";
 import Map_parada from "../Componentes/componentes-paradas/Map_parada";
 import Titulo from "../Componentes/Titulo";
 
-function Paradas() {
+const Contenedor = ({ userType }) => {
 
   return (
     <>
     <Titulo 
     text='Gestion de contenedores'/>
-    <Map_parada/>
+    <Map_parada userType={userType}/>
     </>
   );
 }
 
-export default Paradas;
+export default Contenedor;

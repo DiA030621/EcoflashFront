@@ -32,9 +32,7 @@ const Navbar = (props) => {
         <NavMenu isopen={isopen}>
           <NavLink to='/home'><AiFillHome /> Home
           </NavLink>
-          <NavLink to='/paradas'><FaRegTrashCan /> Contenedores
-          </NavLink>
-          <NavLink to='/usuario'><HiOutlineUsers /> Usuario
+          <NavLink to='/contenedor'><FaRegTrashCan /> Contenedores
           </NavLink>
           <NavBtnLink onClick={logOut}>Cerrar sesión</NavBtnLink>
         </NavMenu>

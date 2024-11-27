@@ -54,7 +54,7 @@ function FormLogin(props) {
     };
 
     return (
-        <div className="boxx">
+        <div className="bo">
             <div className="form sign_inn">
                 <h3>Inicio de Sesión</h3>
 
@@ -82,14 +82,6 @@ function FormLogin(props) {
 
                     {error && <p style={{ color: 'red' }}>{error}</p>}
                 </form>
-
-                {/* Enlace para redirigir a la página de registro */}
-                <p>
-                    ¿No tienes una cuenta?{' '}
-                    <Link to="/register" className="register-link">
-                        Regístrate aquí
-                    </Link>
-                </p>
             </div>
         </div>
     );

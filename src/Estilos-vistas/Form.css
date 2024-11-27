@@ -91,3 +91,20 @@
 .form.sign_inn .btn:hover {
     background-color: #e2ece1; /* Cambio de color al pasar el cursor */
 }
+
+.containe .bo {
+    display: flex;
+    transition: all 0.8s;
+    z-index: 1;
+    overflow: hidden;
+    justify-content: center;
+}
+
+.containe .bo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'Sora', sans-serif; /* Cambio de fuente */
+}

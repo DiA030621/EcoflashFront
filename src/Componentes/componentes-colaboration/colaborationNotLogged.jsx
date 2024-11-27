@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Importar Link
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import "../../Estilos-vistas/Form.css";
 
 function FormLogin(props) {
     const [correo, setUsername] = useState('');
     const [contra, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [info, setInfo] = useState('');
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const idContainer = params.get('id_container');
+    const navegate = useNavigate();
+
 
     const handleSubmit = async (event) => {
+        console.log(idContainer);
         event.preventDefault();
 
         if (!correo.trim() || !contra.trim()) {
@@ -18,9 +25,10 @@ function FormLogin(props) {
         const formData = new FormData();
         formData.append('email', correo);
         formData.append('passwd', contra);
+        formData.append('id_container', idContainer);
 
         try {
-            const response = await fetch('http://localhost/ecoflash/user/login', {
+            const response = await fetch('http://localhost/ecoflash/container/contribution', {
                 method: 'POST',
                 body: formData,
             });
@@ -33,16 +41,14 @@ function FormLogin(props) {
                 setPassword('');
                 return;
             } else {
-                const tipo = data.user[0].type;
-                // if (tipo !== 'admin') {
-                //     setError('Tienes prohibido el acceso');
-                //     setUsername('');
-                //     setPassword('');
-                //     return;
-                // } else {
-                //     props.onLogin(data);
-                // }
-                props.onLogin(data);
+                setTimeout(() => {
+                    setInfo(data.mensaje);
+                    setUsername('');
+                    setPassword('');
+                    setTimeout(() => {
+                        navegate('/login');
+                    }, 5000);
+                }, 1000);
             }
         } catch (error) {
             console.error('Error al realizar la solicitud:', error);
@@ -51,12 +57,14 @@ function FormLogin(props) {
         setUsername('');
         setPassword('');
         setError('');
+        setInfo('');
     };
 
     return (
-        <div className="boxx">
+        <div className="bo">
             <div className="form sign_inn">
-                <h3>Inicio de Sesión</h3>
+                <h3>Contribución</h3>
+                <h5>Valida tu cuenta aquí</h5>
 
                 <form onSubmit={handleSubmit}>
                     <div className="type">
@@ -77,17 +85,17 @@ function FormLogin(props) {
                     </div>
 
                     <button className="btn" type="submit">
-                        Iniciar Sesión
+                        Validar
                     </button>
 
                     {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {info && <p style={{ color: 'green' }}>{info}</p>}
                 </form>
 
-                {/* Enlace para redirigir a la página de registro */}
                 <p>
-                    ¿No tienes una cuenta?{' '}
-                    <Link to="/register" className="register-link">
-                        Regístrate aquí
+                    Página prinicpal{' '}
+                    <Link to="/login" className="register-link">
+                        Aquí
                     </Link>
                 </p>
             </div>

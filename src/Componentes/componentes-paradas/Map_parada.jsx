@@ -1,14 +1,13 @@
 import React, { useEffect, useState} from "react";
 import {APIProvider, Map, Marker} from '@vis.gl/react-google-maps';
 import trashTrue from '../../trashTrue.png';
-import trashFalse from '../../trashTrue.png';
+import trashFalse from '../../trashFalse.png';
 import '../../Estilos-vistas/parada.css';
-import { MdDelete } from "react-icons/md";
-import { FaSave } from "react-icons/fa";
+import { BiReset } from "react-icons/bi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-function Map_parada() {
+const Map_parada = ({ userType }) => {
     
     //hook que define las coordenadas de las paradas
     const [id, setId] = useState('');
@@ -16,6 +15,7 @@ function Map_parada() {
     const [maxWeight, setWeight] = useState('');
     const [lat, setLat] = useState('');
     const [long, setLong] = useState('');
+    const [status, setStatus] = useState('');
     const [container, setContainer] = useState([]);
     const [coordenadas, setCoordenadas] = useState([]);
     const [mostrarForm, setMostrarForm] = useState(false);
@@ -41,61 +41,14 @@ function Map_parada() {
     const NewContainer = (event) =>
     {        
       setEliminarForm(false);
-        if (event.detail && event.detail.latLng) {
-            // Obtén la latitud y longitud del evento de clic
-            const lat = event.detail.latLng.lat;
-            const lng = event.detail.latLng.lng;
-            setMostrarForm(true);
-            setCoordenadas({lat, lng});
-          } else {
-            console.error("error");
-          }
-    }
-
-    const HandleSubmit = (event) =>
-    {
-      event.preventDefault();
-      
-      const fillForm = event.target[0].value;
-      const weightForm = event.target[1].value;
-      const latForm = event.target[2].value;
-      const longForm = event.target[3].value;
-      if (fillForm.trim() === '' || weightForm.trim() === '') {
-        // Si el campo de nombre está vacío, muestra un mensaje de error
-        //setErrorMensaje(true);
-        toast.error("debes llenar todos los campos")
-        return;
-      }
-      //console.log(nombreFormulario);
-      //console.log(event.target[1].value);
-      //console.log(event);
-        const form = new FormData();
-        form.append('lat', latForm);
-        form.append('long', longForm);
-        form.append('max_fill_level', fillForm);
-        form.append('max_weight', weightForm);
-        fetch('http://localhost/ecoflash/container/create_container',
-        {
-          method: 'POST',
-          body: form
-        })
-        .then(response => response.json())
-        .then(data => 
-          {
-            console.log(data.resulatdo);
-            setMensaje(true);
-            toast.success('se ingresaron los datos correctamente')
-            setMostrarForm(false);
-          })
-        .catch(error => console.log(error))
     }
     const HandleDelete = (event) =>
     {
       event.preventDefault();
       
         const formDelete = new FormData();
-        formDelete.append('id', id);
-        fetch('http://localhost/ecoflash/container/delete_container',
+        formDelete.append('id_container', id);
+        fetch('http://localhost/ecoflash/container/reset_container',
         {
           method: 'POST',
           body: formDelete
@@ -112,21 +65,21 @@ function Map_parada() {
         .catch(error => console.log(error))
     }
 
-    const deleteContainer = (id, max_fill_level, max_weight, lat, long) =>
-    {        
-      /*console.log(clave);
-      console.log(nombre);
-      console.log(latitud);
-      console.log(longitud);*/
+    const deleteContainer = (id, max_fill_level, max_weight, lat, long, fill, weight, status) =>
+    {
+      const available_fill = max_fill_level - fill;
+      const available_weight = max_weight - weight;
       setId(id);
-      setMaxFill(max_fill_level);
-      setWeight(max_fill_level);
+      setMaxFill(available_fill);
+      setWeight(available_weight);
       setLat(lat);
       setLong(long);
+      setStatus(status);
       setMostrarForm(false);
       setEliminarForm(true);
       setMensaje(false);
       setMensajeEliminado(false);
+      console.log(status)
 
     }
 
@@ -148,44 +101,33 @@ function Map_parada() {
                   position={{ lat: parseFloat(container.lat), lng: parseFloat(container.long) }}
                   label={container.id}
                   icon={{
-                    url: trashTrue, // Utilizar la imagen del marcador personalizado
-                    scaledSize: new window.google.maps.Size(20, 20), // Tamaño personalizado del marcador
+                    url: container.status === 'f'? trashFalse : trashTrue,
+                    scaledSize: new window.google.maps.Size(20, 20),
                   }}
-                  onClick={() => deleteContainer(container.id, container.max_fill_level, container.max_weight, container.lat, container.long )}
+                  onClick={() => deleteContainer(container.id, container.max_fill_level, container.max_weight, container.lat, container.long, container.centimeters, container.grams, container.status )}
                 />
             ))}
           </Map>
          </APIProvider>
     </div>
     <div className="formulario_parada">
-        {mostrarForm && <form onSubmit={HandleSubmit} className="form-parada">
-            <label className="label-nombre" >Tamaño (cm)</label>
-            <input type="number" className="input-fill"></input>
-            <label className="label-nombre" >Capacidad (gr)</label>
-            <input type="number" className="input-weight"></input>
-            <label className="label-latitud">Latitud:</label>
-            <input className="input-latitud" type="text" value={coordenadas?.lat || ''} readOnly />
+        {eliminarForm && userType == "admin" && <form onSubmit={HandleDelete} className="form-parada">
+            <label className="label-nombre">Tamaño (cm)</label>
+            <input type="text" className="input-nombre" value={maxFill || ''} readOnly/>
+            <label className="label-nombre">Capacidad (gr)</label>
+            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly/>
 
-            <label className="label-longitud">Longitud:</label>
-            <input className="input-longitud" type="text" value={coordenadas?.lng || ''} readOnly />
-
-            <button className="btn-guardar-parada" type="submit"><FaSave size={16}/>Guardar</button>  
+            <button className="btn-reset-container" type="submit"><BiReset size={16}/>Resetear Contenedor</button>
         </form>}
-        {eliminarForm && <form onSubmit={HandleDelete} className="form-parada">
-            <label className="label-nombre" >Tamaño (cm)</label>
-            <input type="text" className="input-nombre" value={maxFill || ''} readOnly />
-            <label className="label-nombre" >Capacidad (gr)</label>
-            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly />
-            <label className="label-latitud">Latitud:</label>
-            <input className="input-latitud" type="text" value={lat || ''} readOnly />
-            <label className="label-longitud">Longitud:</label>
-            <input className="input-longitud" type="text" value={long || ''} readOnly />
-
-            <button className="btn-eliminar-parada" type="submit"><MdDelete size={16} />Eliminar</button>  
+        {eliminarForm && userType == "user" && <form onSubmit={HandleDelete} className="form-parada">
+            <label className="label-nombre">Tamaño (cm)</label>
+            <input type="text" className="input-nombre" value={maxFill || ''} readOnly/>
+            <label className="label-nombre">Capacidad (gr)</label>
+            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly/>
         </form>}
-        </div>
-    <ToastContainer position="bottom-right" />
-  </div>
+    </div>
+        <ToastContainer position="bottom-right"/>
+    </div>
   );
 }
 

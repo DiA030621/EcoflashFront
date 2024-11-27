@@ -45,9 +45,9 @@
     background-color: #0056b3;
   }
   
-  .btn-eliminar-parada {
+  .btn-reset-container {
     padding: 10px 20px;
-    background-color: #c72d2d;
+    background-color: #FF9945;
     color: #fff;
     border: none;
     cursor: pointer;

@@ -1,31 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './Vistas/LoginForm';
-import Register from './Vistas/Register'; // Tu nuevo componente
+import Register from './Vistas/Register';
 import { Home } from './Vistas/Home';
-import Paradas from './Vistas/Paradas';
-import Usuarios from './Vistas/Usuarios';
+import Contenedor from './Vistas/Contenedor';
 import Navbar from './Componentes/Navbar/Navbar';
+import Colaboration from './Vistas/Colaboration';  // Importa el nuevo componente
 import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setUserType] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token && token !== '') {
+    const storedUserType = localStorage.getItem('userType');
+    if (storedUserType && (storedUserType === 'admin' || storedUserType === 'user')) {
       setIsLoggedIn(true);
+      setUserType(storedUserType);
     }
   }, []);
 
-  const handleLogin = (token) => {
+  const handleLogin = (type) => {
     setIsLoggedIn(true);
-    localStorage.setItem('token', token);
+    setUserType(type);
+    localStorage.setItem('userType', type);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
     setIsLoggedIn(false);
+    setUserType(null);
   };
 
   return (
@@ -33,21 +37,20 @@ function App() {
         <BrowserRouter>
           {isLoggedIn ? (
               <>
-                <Navbar onLogout={handleLogout} />
+                <Navbar onLogout={handleLogout} userType={userType} />
                 <Routes>
                   <Route path="/home" element={<Home />} />
-                  <Route path="/paradas" element={<Paradas />} />
-                  <Route path="/usuarios" element={<Usuarios />} />
+                  <Route path="/contenedor" element={<Contenedor userType={userType} />} />
+                  <Route path="/colaboration" element={<Colaboration userType={userType} />} />
                   <Route path="*" element={<Navigate to="/home" />} />
                 </Routes>
               </>
           ) : (
               <Routes>
-                {/* Rutas públicas */}
                 <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
                 <Route path="/register" element={<Register />} />
-                {/* Redirige cualquier ruta no válida a /login */}
                 <Route path="*" element={<Navigate to="/login" />} />
+                <Route path="/colaboration" element={<Colaboration userType={userType} />} />
               </Routes>
           )}
         </BrowserRouter>
