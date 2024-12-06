@@ -20,7 +20,7 @@ function FormLogin(props) {
         formData.append('passwd', contra);
 
         try {
-            const response = await fetch('http://localhost/ecoflash/user/login', {
+            const response = await fetch('https://snapper-finer-boa.ngrok-free.app/ecoflash/user/login', {
                 method: 'POST',
                 body: formData,
             });
@@ -33,7 +33,7 @@ function FormLogin(props) {
                 setPassword('');
                 return;
             } else {
-                const tipo = data.user[0].type;
+                const tipo = data;
                 // if (tipo !== 'admin') {
                 //     setError('Tienes prohibido el acceso');
                 //     setUsername('');

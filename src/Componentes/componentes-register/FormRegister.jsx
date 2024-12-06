@@ -26,7 +26,7 @@ function FormLogin(props) {
         formData.append('passwd', passwd);
 
         try {
-            const response = await fetch('http://localhost/ecoflash/user/singin', {
+            const response = await fetch('https://snapper-finer-boa.ngrok-free.app/ecoflash/user/singin', {
                 method: 'POST',
                 body: formData,
             });

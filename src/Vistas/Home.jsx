@@ -2,15 +2,18 @@ import React from "react";
 import Bienvenida from "../Componentes/componentes-home/Bienvenida";
 import Titulo from "../Componentes/Titulo";
 
-export function Home ()
+export function Home  (props)
 {
+    const name = props.name;
+    console.log(props)
     return(
         <div>
             <Titulo
             text="Inicio"/>
             <Bienvenida 
-            nombre="Bienvenido"
-            testimonio="Este es el panel de control Ecoflash"/>
+            name = {name}
+            lastname = {props.lastname}
+            score={props.score}/>
         </div>
     )
 }

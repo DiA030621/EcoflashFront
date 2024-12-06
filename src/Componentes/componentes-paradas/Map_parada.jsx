@@ -22,6 +22,18 @@ const Map_parada = ({ userType }) => {
     const [mensaje, setMensaje] = useState(false);
     const [eliminarForm, setEliminarForm] = useState(false);
     const [mensajeEliminado, setMensajeEliminado] = useState(false);
+    const [selectedContainer, setSelectedContainer] = useState(null);
+
+    const handleMarkerClick = (container) => {
+        setSelectedContainer(container);
+        setId(container.id);
+        console.log(container.id);
+    };
+
+    const closeInfoWindow = () => {
+        setSelectedContainer(null);
+    };
+
 
     useEffect(() => {
         // Llamada a la primera API para obtener las paradas
@@ -42,12 +54,11 @@ const Map_parada = ({ userType }) => {
     {        
       setEliminarForm(false);
     }
-    const HandleDelete = (event) =>
+    const HandleDelete = () =>
     {
-      event.preventDefault();
-      
         const formDelete = new FormData();
         formDelete.append('id_container', id);
+        console.log(id)
         fetch('http://localhost/ecoflash/container/reset_container',
         {
           method: 'POST',
@@ -56,7 +67,6 @@ const Map_parada = ({ userType }) => {
         .then(response => response.json())
         .then(data => 
           {
-            //console.log(data.resulatdo);
             setMensajeEliminado(true);
             toast.warning(data.mensaje)
             setMostrarForm(false);
@@ -65,69 +75,69 @@ const Map_parada = ({ userType }) => {
         .catch(error => console.log(error))
     }
 
-    const deleteContainer = (id, max_fill_level, max_weight, lat, long, fill, weight, status) =>
-    {
-      const available_fill = max_fill_level - fill;
-      const available_weight = max_weight - weight;
-      setId(id);
-      setMaxFill(available_fill);
-      setWeight(available_weight);
-      setLat(lat);
-      setLong(long);
-      setStatus(status);
-      setMostrarForm(false);
-      setEliminarForm(true);
-      setMensaje(false);
-      setMensajeEliminado(false);
-      console.log(status)
-
-    }
+    // const deleteContainer = (id, max_fill_level, max_weight, lat, long, fill, weight, status) =>
+    // {
+    //   const available_fill = max_fill_level - fill;
+    //   const available_weight = max_weight - weight;
+    //   setId(id);
+    //   setMaxFill(available_fill);
+    //   setWeight(available_weight);
+    //   setLat(lat);
+    //   setLong(long);
+    //   setStatus(status);
+    //   setMostrarForm(false);
+    //   setEliminarForm(true);
+    //   setMensaje(false);
+    //   setMensajeEliminado(false);
+    //   console.log(status)
+    // }
 
   return (
-    <div className="container_parada">
-      <div className="parada">
-        <APIProvider apiKey={''}>
-          <Map
-            style={{width: '100%', height: '550px'}}
-            defaultCenter={{lat: 20.6536, lng: -100.4036}}
-            defaultZoom={13}
-            gestureHandling={'greedy'}
-            disableDefaultUI={true}
-            onClick={NewContainer}
-          >
-            {container.map(container => (
-                <Marker
-                  key={container.id}
-                  position={{ lat: parseFloat(container.lat), lng: parseFloat(container.long) }}
-                  label={container.id}
-                  icon={{
-                    url: container.status === 'f'? trashFalse : trashTrue,
-                    scaledSize: new window.google.maps.Size(20, 20),
-                  }}
-                  onClick={() => deleteContainer(container.id, container.max_fill_level, container.max_weight, container.lat, container.long, container.centimeters, container.grams, container.status )}
-                />
-            ))}
-          </Map>
-         </APIProvider>
-    </div>
-    <div className="formulario_parada">
-        {eliminarForm && userType == "admin" && <form onSubmit={HandleDelete} className="form-parada">
-            <label className="label-nombre">Tamaño (cm)</label>
-            <input type="text" className="input-nombre" value={maxFill || ''} readOnly/>
-            <label className="label-nombre">Capacidad (gr)</label>
-            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly/>
+      <div className="map-container">
+          <APIProvider apiKey="AIzaSyA4i6wY6szEPVUtksKuIvL5R_QZFsbl5xc">
+              <Map
+                  // style={{width: "100%", height: "100vh"}}
+                  defaultCenter={{lat: 20.6536, lng: -100.4036}}
+                  defaultZoom={13}
+                  gestureHandling="greedy"
+                  disableDefaultUI={true}
+              >
+                  {container.map((c) => (
+                      <Marker
+                          key={c.id}
+                          position={{lat: parseFloat(c.lat), lng: parseFloat(c.long)}}
+                          label={c.id}
+                          icon={{
+                              url: c.status === "f" ? trashFalse : trashTrue,
+                              scaledSize: new window.google.maps.Size(20, 20),
+                          }}
+                          onClick={() => handleMarkerClick(c)}
+                      />
+                  ))}
+              </Map>
 
-            <button className="btn-reset-container" type="submit"><BiReset size={16}/>Resetear Contenedor</button>
-        </form>}
-        {eliminarForm && userType == "user" && <form onSubmit={HandleDelete} className="form-parada">
-            <label className="label-nombre">Tamaño (cm)</label>
-            <input type="text" className="input-nombre" value={maxFill || ''} readOnly/>
-            <label className="label-nombre">Capacidad (gr)</label>
-            <input type="text" className="input-nombre" value={maxWeight || ''} readOnly/>
-        </form>}
-    </div>
-        <ToastContainer position="bottom-right"/>
-    </div>
+              {selectedContainer && (
+                  <div className="info-window">
+                      <button className="close-btn" onClick={closeInfoWindow}>×</button>
+                      <div className="info-content">
+                          <h3>Información del Contenedor</h3>
+                          <div>
+                              <strong>Tamaño (cm):</strong> {selectedContainer.max_fill_level || "N/A"}
+                          </div>
+                          <div>
+                              <strong>Capacidad (gr):</strong> {selectedContainer.max_weight || "N/A"}
+                          </div>
+                          {userType === "admin" && (
+                              <button className="btn-reset" onClick={HandleDelete}>
+                                  <BiReset size={16}/> Resetear Contenedor
+                              </button>
+                          )}
+                      </div>
+                  </div>
+              )}
+          </APIProvider>
+          <ToastContainer position="bottom-right"/>
+      </div>
   );
 }
 

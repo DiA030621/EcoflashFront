@@ -6,7 +6,7 @@ const LoginForm = (props) => {
     const Login = (data) => {
         const tipo = data.user[0].type;
         if (tipo === 'admin' || tipo === 'user') {
-            props.onLogin(tipo); // Pasar el tipo de usuario
+            props.onLogin(data); // Pasar el tipo de usuario
         } else {
             console.log('no se pudo pa');
         }
